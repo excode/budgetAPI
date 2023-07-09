@@ -1,0 +1,61 @@
+@HOST = http://localhost:8080
+@AUTH = authtoken
+@TESTID = testID
+//LOGIN ENDPOINT TO GET AUTH TOKEN
+POST {{HOST}}/auth HTTP/1.1
+content-type: application/json
+
+{
+"email":"test@ucode.ai",
+"password":"123456"
+}
+###
+POST {{HOST}}/accountcategory HTTP/1.1
+Authorization: Bearer {{AUTH}}
+content-type: application/json
+
+{
+"accountType":"pariatur",
+"parentCategory":"dolore",
+"category":"voluptate",
+"isParentCategory":"false"
+}
+
+###
+
+GET {{HOST}}/accountcategory? HTTP/1.1
+Authorization: Bearer {{AUTH}}
+
+###
+GET {{HOST}}/accountcategory?accountType=pariatur&parentCategory=dolore&category=voluptate&isParentCategory=false HTTP/1.1
+Authorization: Bearer {{AUTH}}
+
+###
+GET {{HOST}}/accountcategory/{{TESTID}} HTTP/1.1
+Authorization: Bearer {{AUTH}}
+
+###
+PUT {{HOST}}/accountcategory/{{TESTID}} HTTP/1.1
+Authorization: Bearer {{AUTH}}
+content-type: application/json
+
+{
+"accountType":"pariatur",
+"parentCategory":"dolore",
+"category":"voluptate",
+"isParentCategory":"false"
+}
+###
+PATCH {{HOST}}/accountcategory/{{TESTID}} HTTP/1.1
+Authorization: Bearer {{AUTH}}
+content-type: application/json
+
+{
+"accountType":"pariatur",
+"parentCategory":"dolore",
+"category":"voluptate",
+"isParentCategory":"false"
+}
+###
+DELETE {{HOST}}/accountcategory/{{TESTID}} http/1.1
+Authorization: Bearer {{AUTH}} 

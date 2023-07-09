@@ -1,0 +1,71 @@
+@HOST =https://app.ikra.my
+@AUTH = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDk2Y2UxOWFhZGExMzI3OGE5ZGZlMjUiLCJlbWFpbCI6InRlc3RAdWNvZGUuYWkiLCJwZXJtaXNzaW9uTGV2ZWwiOiIwIiwibGFzdE5hbWUiOiJ1Q29kZSIsIm9yZ2FuaXphdGlvbiI6IiIsIndlYkFjY2VzcyI6MCwicmVmcmVzaEtleSI6IlRZVmZYVmNsVFZUbkJmRnBDQTQrZkE9PSIsImlhdCI6MTY4ODg3NjkzOX0.7jlADAhQhFDX30DYRO_Qumg-bk-fpfVIDY-b_wgx0bY
+@TESTID = testID
+//LOGIN ENDPOINT TO GET AUTH TOKEN
+POST {{HOST}}/auth HTTP/1.1
+content-type: application/json
+
+{
+"email":"test@ucode.ai",
+"password":"123456"
+}
+###
+POST {{HOST}}/accountbook HTTP/1.1
+Authorization: Bearer {{AUTH}}
+content-type: application/json
+
+{
+"particular":"sitclf",
+"receiptNo":"fugiat",
+"amount":700,
+"category":"Office Rent",
+"organizationId":"6497c051b05f6fa50af450a6",
+"memo":"Adipisicing occaecat do ea fugiat ad sit ullamco nisi."
+}
+
+###
+
+GET {{HOST}}/accountbook? HTTP/1.1
+Authorization: Bearer {{AUTH}}
+
+###
+GET {{HOST}}/accountbook?organization=officia&particular=sitclf&receiptNo=fugiat&amount=1&category=minim&memo=Adipisicin HTTP/1.1
+Authorization: Bearer {{AUTH}}
+
+###
+GET {{HOST}}/accountbook/{{TESTID}} HTTP/1.1
+Authorization: Bearer {{AUTH}}
+
+###
+PUT {{HOST}}/accountbook/{{TESTID}} HTTP/1.1
+Authorization: Bearer {{AUTH}}
+content-type: application/json
+
+{
+"particular":"sitclf",
+"receiptNo":"fugiat",
+"amount":"1",
+"category":"minim",
+"memo":"Adipisicing occaecat do ea fugiat ad sit ullamco nisi."
+}
+###
+PATCH {{HOST}}/accountbook/{{TESTID}} HTTP/1.1
+Authorization: Bearer {{AUTH}}
+content-type: application/json
+
+{
+"particular":"sitclf",
+"receiptNo":"fugiat",
+"amount":"1",
+"category":"minim",
+"memo":"Adipisicing occaecat do ea fugiat ad sit ullamco nisi."
+}
+###
+DELETE {{HOST}}/accountbook/{{TESTID}} http/1.1
+Authorization: Bearer {{AUTH}} 
+
+@HOST =https://app.ikra.my
+@AUTH = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDk2Y2UxOWFhZGExMzI3OGE5ZGZlMjUiLCJlbWFpbCI6InRlc3RAdWNvZGUuYWkiLCJwZXJtaXNzaW9uTGV2ZWwiOiIwIiwibGFzdE5hbWUiOiJ1Q29kZSIsIm9yZ2FuaXphdGlvbiI6IiIsIndlYkFjY2VzcyI6MCwicmVmcmVzaEtleSI6IlRZVmZYVmNsVFZUbkJmRnBDQTQrZkE9PSIsImlhdCI6MTY4ODg3NjkzOX0.7jlADAhQhFDX30DYRO_Qumg-bk-fpfVIDY-b_wgx0bY
+###
+GET {{HOST}}/chart/all HTTP/1.1
+Authorization: Bearer {{AUTH}}

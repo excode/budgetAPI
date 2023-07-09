@@ -1,0 +1,86 @@
+@HOST = https://app.ikra.my
+@AUTH = authtoken
+@TESTID = testID
+//LOGIN ENDPOINT TO GET AUTH TOKEN
+POST {{HOST}}/auth HTTP/1.1
+content-type: application/json
+
+{
+"email":"test@ucode.ai",
+"password":"123456"
+}
+###
+POST {{HOST}}/users HTTP/1.1
+Authorization: Bearer {{AUTH}}
+content-type: application/json
+
+{
+"firstName":"dolore",
+"password":"ucode1234",
+"email":"ullamco@ucode.ai",
+"mobile":"estclf",
+"country":"proident",
+"userType":"veniam",
+"lastName":"excepteur"
+}
+
+###
+
+POST {{HOST}}/users/reg HTTP/1.1
+content-type: application/json
+
+{
+"lastName":"uCode",
+"firstName":"Test",
+"email":"test2@ucode.ai",
+"password":"123456",
+"mobile":"0176701946",
+"userType":"0",
+"country":"qa"
+
+}
+
+###
+
+GET {{HOST}}/users? HTTP/1.1
+Authorization: Bearer {{AUTH}}
+
+###
+GET {{HOST}}/users?firstName=dolore&email=ullamco@uc&mobile=estclf&country=proident&userType=veniam&lastName=excepteur HTTP/1.1
+Authorization: Bearer {{AUTH}}
+
+###
+GET {{HOST}}/users/{{TESTID}} HTTP/1.1
+Authorization: Bearer {{AUTH}}
+
+###
+PUT {{HOST}}/users/{{TESTID}} HTTP/1.1
+Authorization: Bearer {{AUTH}}
+content-type: application/json
+
+{
+"firstName":"dolore",
+"password":"ucode1234",
+"email":"ullamco@ucode.ai",
+"mobile":"estclf",
+"country":"proident",
+"userType":"veniam",
+"lastName":"excepteur"
+}
+###
+PATCH {{HOST}}/users/{{TESTID}} HTTP/1.1
+Authorization: Bearer {{AUTH}}
+content-type: application/json
+
+{
+"firstName":"dolore",
+"password":"ucode1234",
+"email":"ullamco@ucode.ai",
+"mobile":"estclf",
+"country":"proident",
+"userType":"veniam",
+"lastName":"excepteur"
+}
+###
+DELETE {{HOST}}/users/{{TESTID}} http/1.1
+Authorization: Bearer {{AUTH}} 

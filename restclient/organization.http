@@ -1,0 +1,73 @@
+@HOST = http://localhost:8080
+@AUTH = authtoken
+@TESTID = testID
+//LOGIN ENDPOINT TO GET AUTH TOKEN
+POST {{HOST}}/auth HTTP/1.1
+content-type: application/json
+
+{
+"email":"test@ucode.ai",
+"password":"123456"
+}
+###
+POST {{HOST}}/organization HTTP/1.1
+Authorization: Bearer {{AUTH}}
+content-type: application/json
+
+{
+"name":"tempor",
+"type":"exercitation",
+"address":"Esse reprehenderit in ea laboris labore ad id laborum sunt incididunt non.",
+"city":"adipisicing",
+"state":"adipisicing",
+"country":"Lorem",
+"logo":"",
+"email":"officia@ucode.ai3"
+}
+
+###
+
+GET {{HOST}}/organization? HTTP/1.1
+Authorization: Bearer {{AUTH}}
+
+###
+GET {{HOST}}/organization?name=tempor&type=exercitati&city=adipisicin&state=adipisicin&country=Lorem&email=officia@uc HTTP/1.1
+Authorization: Bearer {{AUTH}}
+
+###
+GET {{HOST}}/organization/{{TESTID}} HTTP/1.1
+Authorization: Bearer {{AUTH}}
+
+###
+PUT {{HOST}}/organization/{{TESTID}} HTTP/1.1
+Authorization: Bearer {{AUTH}}
+content-type: application/json
+
+{
+"name":"tempor",
+"type":"exercitation",
+"address":"Esse reprehenderit in ea laboris labore ad id laborum sunt incididunt non.",
+"city":"adipisicing",
+"state":"adipisicing",
+"country":"Lorem",
+"logo":"",
+"email":"officia@ucode.ai3"
+}
+###
+PATCH {{HOST}}/organization/{{TESTID}} HTTP/1.1
+Authorization: Bearer {{AUTH}}
+content-type: application/json
+
+{
+"name":"tempor",
+"type":"exercitation",
+"address":"Esse reprehenderit in ea laboris labore ad id laborum sunt incididunt non.",
+"city":"adipisicing",
+"state":"adipisicing",
+"country":"Lorem",
+"logo":"",
+"email":"officia@ucode.ai3"
+}
+###
+DELETE {{HOST}}/organization/{{TESTID}} http/1.1
+Authorization: Bearer {{AUTH}} 

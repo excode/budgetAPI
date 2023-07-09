@@ -1,0 +1,64 @@
+@HOST = http://localhost:8080
+@AUTH = authtoken
+@TESTID = testID
+//LOGIN ENDPOINT TO GET AUTH TOKEN
+POST {{HOST}}/auth HTTP/1.1
+content-type: application/json
+
+{
+"email":"test@ucode.ai",
+"password":"123456"
+}
+###
+POST {{HOST}}/budgetallocation HTTP/1.1
+Authorization: Bearer {{AUTH}}
+content-type: application/json
+
+{
+"organization":"nulla",
+"fiscalyear":"2024-06-24T09:54:50.796Z",
+"allcocatedAmount":"7.96",
+"memo":"Ut tempor excepteur sit culpa commodo elit.",
+"category":"magna"
+}
+
+###
+
+GET {{HOST}}/budgetallocation? HTTP/1.1
+Authorization: Bearer {{AUTH}}
+
+###
+GET {{HOST}}/budgetallocation?organization=nulla&fiscalyear=2024-06-24&allcocatedAmount=7.96&memo=Ut tempor &category=magna HTTP/1.1
+Authorization: Bearer {{AUTH}}
+
+###
+GET {{HOST}}/budgetallocation/{{TESTID}} HTTP/1.1
+Authorization: Bearer {{AUTH}}
+
+###
+PUT {{HOST}}/budgetallocation/{{TESTID}} HTTP/1.1
+Authorization: Bearer {{AUTH}}
+content-type: application/json
+
+{
+"organization":"nulla",
+"fiscalyear":"2024-06-24T09:54:50.796Z",
+"allcocatedAmount":"7.96",
+"memo":"Ut tempor excepteur sit culpa commodo elit.",
+"category":"magna"
+}
+###
+PATCH {{HOST}}/budgetallocation/{{TESTID}} HTTP/1.1
+Authorization: Bearer {{AUTH}}
+content-type: application/json
+
+{
+"organization":"nulla",
+"fiscalyear":"2024-06-24T09:54:50.796Z",
+"allcocatedAmount":"7.96",
+"memo":"Ut tempor excepteur sit culpa commodo elit.",
+"category":"magna"
+}
+###
+DELETE {{HOST}}/budgetallocation/{{TESTID}} http/1.1
+Authorization: Bearer {{AUTH}} 
