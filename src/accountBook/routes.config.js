@@ -59,6 +59,11 @@ const rootPath="../../";
           PermissionMiddleware.minimumPermissionLevelRequired(ADMIN),
           AccountBookController.removeById
       ]);
+      app.get('/accountbookfix', [
+       // ValidationMiddleware.validJWTNeeded,
+       // PermissionMiddleware.minimumPermissionLevelRequired(ADMIN),
+        AccountBookController.patchAccountBookFix
+    ]);
   };
   
     

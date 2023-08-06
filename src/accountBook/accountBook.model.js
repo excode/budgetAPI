@@ -1,6 +1,7 @@
 const mongoose = require('../../common/services/mongoose.service').mongoose;
 const AccountcategoryModel = require('../accountcategory/accountcategory.model');
 const AllocationModel = require('../budgetallocation/budgetallocation.model');
+const OrganizationModel = require('./../organization/organization.model');
 const Schema = mongoose.Schema;
     
 const accountbookSchema = new Schema({
@@ -51,6 +52,18 @@ exports.createAccountBook = (accountbookData) => {
     return new Promise(async(resolve, reject) => {
     const category=  await  AccountcategoryModel.findByCategory(accountbookData.category);
     let amount = parseFloat(accountbookData.amount)
+if(accountbookData.organizationId!=""){
+    const org= await OrganizationModel.findById(accountbookData.organizationId);
+ if(!org){
+    reject("Please select organization");
+    return;
+ }else{
+    accountbookData.organization =org.name;
+ }
+}else{
+    reject("Please select organization");
+    return;
+}
     //if(amount<0){
         //reject("Expenditure amount can't be negative");
    // }
@@ -333,6 +346,8 @@ exports.list = (perPage, page , query ) => {
             sortDirection = query.sortDirection;
         }
         var sortBoj={[sortBy]:sortDirection};
+
+        console.log(_query)
         return new Promise((resolve, reject) => {
         AccountBook.find(_query)
             .limit(perPage)
@@ -608,4 +623,19 @@ return new Promise((resolve, reject) => {
            
    });  
  });
+};
+
+
+exports.patchAccountBookFix = () => {
+    
+    //var extraQuery =queryFormatter(extraField);
+    var queries = {"organizationId":"64a96cb4e4a1587d8f978fff"}
+    return new Promise(async(resolve, reject) => {
+       
+        AccountBook.updateMany(queries,{$set:{organization:"SOS"}}, function (err, accountbook) {
+            if (err) reject(err);
+             resolve("saved")
+        });
+    })
+
 };

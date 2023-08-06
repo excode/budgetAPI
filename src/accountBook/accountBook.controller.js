@@ -7,6 +7,10 @@ const AccountBookModel = require('./accountBook.model');
         req.body.createAt=funcs.getTime()
        if(!req.body.organizationId){
           req.body.organizationId=req.jwt.organization
+       }else{
+
+        req.body.organizationId=req.body.organizationId;
+
        }
             AccountBookModel.createAccountBook(req.body)
                   .then((result) => {
@@ -194,6 +198,17 @@ exports.listSuggestions = (req, res ) => {
             res.status(200).send(result);
         }).catch((err)=>{
            console.log(err)
+            res.status(400).json( {err:err} );
+        });
+};
+
+exports.patchAccountBookFix = (req, res) => {
+  let filter ={}
+  
+  AccountBookModel.patchAccountBookFix()
+        .then((result)=>{
+            res.status(204).send({});
+        }).catch((err)=>{
             res.status(400).json( {err:err} );
         });
 };
