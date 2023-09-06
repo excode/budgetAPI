@@ -1,6 +1,6 @@
 @HOST =https://app.ikra.my
 @HOSTL =http://localhost:8090
-@AUTH = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDk2Y2UxOWFhZGExMzI3OGE5ZGZlMjUiLCJlbWFpbCI6InRlc3RAdWNvZGUuYWkiLCJwZXJtaXNzaW9uTGV2ZWwiOiIwIiwibGFzdE5hbWUiOiJ1Q29kZSIsIm9yZ2FuaXphdGlvbiI6IiIsIndlYkFjY2VzcyI6MCwicmVmcmVzaEtleSI6Ino3OHkrcXc4eXFieUFQTWZlY1hQSXc9PSIsImlhdCI6MTY5MTMzMjgzN30.qUaWFxLpNr3I6GLvOYP-grwjP3592uE1pSEI5Pql3pg
+@AUTH = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDk2Y2UxOWFhZGExMzI3OGE5ZGZlMjUiLCJlbWFpbCI6InRlc3RAdWNvZGUuYWkiLCJwZXJtaXNzaW9uTGV2ZWwiOiIwIiwibGFzdE5hbWUiOiJ1Q29kZSIsIm9yZ2FuaXphdGlvbiI6IiIsIndlYkFjY2VzcyI6MCwicmVmcmVzaEtleSI6InVQU1FEcDdGWFV5aG9vVWpPTzFNTEE9PSIsImlhdCI6MTY5NDAxMTMxMX0.67gZjid_c1WHoFGxft1e7bVA6-DOsqTisKKCVx2GMnI
 @TESTID = testID
 //LOGIN ENDPOINT TO GET AUTH TOKEN
 POST {{HOST}}/auth HTTP/1.1
@@ -30,7 +30,7 @@ GET {{HOST}}/accountbook? HTTP/1.1
 Authorization: Bearer {{AUTH}}
 
 ###
-GET {{HOST}}/accountbook?organization=officia&particular=sitclf&receiptNo=fugiat&amount=1&category=minim&memo=Adipisicin HTTP/1.1
+GET {{HOSTL}}/accountbook?category=Car&category_mode=in&page=0&limit=10 HTTP/1.1
 Authorization: Bearer {{AUTH}}
 
 ###

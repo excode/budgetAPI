@@ -315,10 +315,12 @@ exports.list = (perPage, page , query ) => {
         }
      }
     }
-
-
-    if(query.category){
+   // console.log("query.category")
+//console.log(query.category)
+    if(query.category!=undefined && query.category!=""){
+       // console.log("query.category1")
         if(query.hasOwnProperty('category_mode')){
+            //console.log("query.category2")
             const mode = query.category_mode;
             if(mode=="startsWith"){
                 _query['category'] = new RegExp('^'+query.category,'i');
@@ -330,7 +332,7 @@ exports.list = (perPage, page , query ) => {
                 _query['category'] = new RegExp(query.category+'$','i');
             }else if(mode=="notContains"){
                 _query['category'] = {$not: new RegExp(query.category,'i')} ;
-            }else if(mode=="contains"){
+            }else if(mode=="contains" || mode=="in"){
                 _query['category'] = new RegExp(query.category,'i');
             }
         }else{
@@ -338,7 +340,7 @@ exports.list = (perPage, page , query ) => {
         }
 
     }
-
+ //console.log(query)
         if(query.sortBy){
             sortBy = query.sortBy;
         }
