@@ -1,5 +1,6 @@
 const mongoose = require('../../common/services/mongoose.service').mongoose;
 const AccountcategoryModel = require('../accountcategory/accountcategory.model');
+const UsersModel = require('../users/users.model');
 const Schema = mongoose.Schema;
     
 const budgetallocationSchema = new Schema({
@@ -7,13 +8,15 @@ const budgetallocationSchema = new Schema({
     createAt : { type: Date,required:true},
     updateBy : { type: String},
     updateAt : { type: Date},
-    organization : { type: String,required:true,default:''},
+    organization : { type: String,default:''},
     organizationId : { type: String},
     fiscalyear : { type: Date,required:true},
     allcocatedAmount : { type: Number,required:true,default:0,max:Infinity,min:1},
     memo : { type: String},
     category : { type: String,required:true,default:''},
-    accountType : { type: String}
+    accountType : { type: String},
+    user : { type: String},
+    userId : { type: String}
 });
 
 budgetallocationSchema.virtual('id').get(function () {
@@ -44,36 +47,13 @@ exports.findById = (id,extraField) => {
         });
 };
 exports.findAllocationByCategory = (category,organization,fyscalYear) => {
-    //var extraQuery =queryFormatter(extraField);
-    //var queries = {...extraQuery,category:category}
-    var query1=`
-    {
-        $match: {
-          
-          category:'${category}',
-          organization:'${organization}',
-          date: {
-            $gte: ISODate("2023-01-01"), // Start date of the range
-            $lte: ISODate("2023-12-31") // End date of the range
-          }
-        }
-      },
-      {
-        $group: {
-          _id: "$category",
-          totalBudget: { $sum: "$allcocatedAmount" }
-        }
-      },
-      {
-        $project: {
-          category: "$_id",
-          totalBudget: 1,
-          _id: 0
-        }
-      }
-    `
+   
+    var fiscalYear1=new Date().getFullYear();
+    //var StartDate=fiscalYear1+"-01-01";
+    //var EndDate=fiscalYear1+"-12-31"
     var query=
     [
+        
         {
         $match: {
           
@@ -127,8 +107,69 @@ exports.findAllocationByCategory = (category,organization,fyscalYear) => {
      });
 };
 
+exports.findAllocationByCategory1 = (category,userId) => {
+   
+    var fiscalYear1=new Date().getFullYear();
+    var StartDate=fiscalYear1+"-01-01";
+    var EndDate=fiscalYear1+"-12-31"
+    var query=
+    [
+       
+        {
+        $match: {
+          category:category,
+          userId:userId,
+         // year:fiscalYear1
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          totalBudget: { $sum: "$allcocatedAmount" }
+        }
+      },
+      {
+        $project: {
+        totalBudget: 1,
+          _id: 0
+        }
+      }
+    ];
+
+
+   // console.log(query)
+    return new Promise((resolve, reject) => {
+        Budgetallocation.aggregate(query)
+        .exec( function (err,sum){
+           if (err) {
+               console.log(err);
+               console.log("RIPA-------");
+               reject(err);
+               
+           }else{
+            //console.log(query)
+           // console.log("RIPA-------");
+               console.log(sum);
+              if(sum.length>0){
+              const [{totalBudget}]=sum;
+              if(totalBudget){
+                resolve(totalBudget);
+              }else{
+                resolve(0);
+              }
+            }else{
+                resolve(0);
+            }
+               
+           }
+               
+       });  
+     });
+};
 exports.createBudgetallocation = (budgetallocationData) => {
     return new Promise(async(resolve, reject) => {
+        const userData=  await  UsersModel.findByEmail3(budgetallocationData.userId);
+        
         const category=  await  AccountcategoryModel.findByCategory(budgetallocationData.category);
       
         if(category){
@@ -136,7 +177,14 @@ exports.createBudgetallocation = (budgetallocationData) => {
             budgetallocationData.accountType= category.accountType;
          
         }else{
+            //if(!userData){
             return reject("Please select the category for list");
+           // }
+        }
+        if(userData){
+            budgetallocationData.user= userData.firstName+" "+userData.lastName;
+        }else{
+            budgetallocationData.user= "";
         }
     const budgetallocation = new Budgetallocation(budgetallocationData);
     budgetallocation.save(function (err, saved) {
@@ -197,10 +245,33 @@ exports.list = (perPage, page , query ) => {
         }
 
     }
+    if(query.user){
+        if(query.hasOwnProperty('user_mode')){
+            const mode = query.user_mode;
+            if(mode=="startsWith"){
+                _query['userId'] = new RegExp('^'+query.user,'i');
+            }else if(mode=="equals"){
+                _query['userId'] = query.user;
+            }else if(mode=="notEquals"){
+                _query['userId'] = { $ne: query.user } ;
+            }else if(mode=="endsWith"){
+                _query['userId'] = new RegExp(query.user+'$','i');
+            }else if(mode=="notContains"){
+                _query['userId'] = {$not: new RegExp(query.user,'i')} ;
+            }else if(mode=="contains" || mode=="in"){
+                _query['userId'] = new RegExp(query.user,'i');
+            }
+        }else{
+        _query['userId'] = new RegExp(query.userId,'i');
+        }
+
+    }
 
 
     if(query.organization){
+       // console.log("AAA111A")
         if(query.hasOwnProperty('organization_mode')){
+            //console.log("AAA111A")
             const mode = query.organization_mode;
             if(mode=="startsWith"){
                 _query['organization'] = new RegExp('^'+query.organization,'i');
@@ -212,7 +283,8 @@ exports.list = (perPage, page , query ) => {
                 _query['organization'] = new RegExp(query.organization+'$','i');
             }else if(mode=="notContains"){
                 _query['organization'] = {$not: new RegExp(query.organization,'i')} ;
-            }else if(mode=="contains"){
+            }else if(mode=="contains" || mode=="in"){
+                console.log("AAAA")
                 _query['organization'] = new RegExp(query.organization,'i');
             }
         }else{
@@ -303,6 +375,7 @@ exports.list = (perPage, page , query ) => {
         }
         var sortBoj={[sortBy]:sortDirection};
         return new Promise((resolve, reject) => {
+            //console.log(_query)
         Budgetallocation.find(_query)
             .limit(perPage)
             .sort(sortBoj)
@@ -381,6 +454,13 @@ exports.patchBudgetallocation = (id, budgetallocationData,extraField={}) => {
          
         }else{
             return reject("Please select the category for list");
+        }
+        const userData=  await  UsersModel.findById(budgetallocationData.userId);
+        
+        if(userData){
+            budgetallocationData.user= userData.firstName+" "+userData.lastName;
+        }else{
+            budgetallocationData.user= "";
         }
         Budgetallocation.findOne(queries, function (err, budgetallocation) {
             if (err) reject(err);

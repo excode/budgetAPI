@@ -253,8 +253,8 @@ exports.list = (perPage, page , query ) => {
 };
 exports.listAll = ( query={} ) => {
     const _query={...query};
-    let sortBy='_id'
-    let sortDirection=-1
+    let sortBy='firstName'
+    let sortDirection=1
     let max_limit = 300;
     if(query.sortBy){
         sortBy = query.sortBy;
@@ -264,14 +264,18 @@ exports.listAll = ( query={} ) => {
     }
     var sortBoj={[sortBy]:sortDirection};
     return new Promise((resolve, reject) => {
-    Users.find(_query)
+    Users.find(_query).select()
         .limit(max_limit) 
         .sort(sortBoj)
         .exec(function (err, users) {
                 if (err) {
                     reject(err);
                 } else {
-                resolve(users);
+                    const users_ = users.map(doc => ({
+                        id:doc.email,
+                        name: doc.firstName + ' ' + doc.lastName
+                      }));
+                resolve(users_);
                 }
             })
     });

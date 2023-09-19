@@ -1,13 +1,13 @@
-@HOST =https://app.ikra.my
+@HOST =http://localhost:8090
 @HOSTL =http://localhost:8090
-@AUTH = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDk2Y2UxOWFhZGExMzI3OGE5ZGZlMjUiLCJlbWFpbCI6InRlc3RAdWNvZGUuYWkiLCJwZXJtaXNzaW9uTGV2ZWwiOiIwIiwibGFzdE5hbWUiOiJ1Q29kZSIsIm9yZ2FuaXphdGlvbiI6IiIsIndlYkFjY2VzcyI6MCwicmVmcmVzaEtleSI6InVQU1FEcDdGWFV5aG9vVWpPTzFNTEE9PSIsImlhdCI6MTY5NDAxMTMxMX0.67gZjid_c1WHoFGxft1e7bVA6-DOsqTisKKCVx2GMnI
+@AUTH = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NGE5Nzg0NmE2ZTRjMTE5ZDFlN2RhMjUiLCJlbWFpbCI6ImFmbmFuQHVjb2RlLmFpIiwicGVybWlzc2lvbkxldmVsIjoiMSIsImxhc3ROYW1lIjoiQWhtZWQiLCJvcmdhbml6YXRpb24iOiI2NGE5NmNiNGU0YTE1ODdkOGY5NzhmZmYiLCJ3ZWJBY2Nlc3MiOjAsInJlZnJlc2hLZXkiOiJZcWYxY1RXNkF5U3dLSmZ0dEU2Y2lBPT0iLCJpYXQiOjE2OTUwOTQ1NDd9.aXDCu0XCEcWe2QZOrnB6RZ9MNIdTLjDDBqknmPgwyWA
 @TESTID = testID
 //LOGIN ENDPOINT TO GET AUTH TOKEN
 POST {{HOST}}/auth HTTP/1.1
 content-type: application/json
 
 {
-"email":"test@ucode.ai",
+"email":"afnan@ucode.ai",
 "password":"123456"
 }
 ###
@@ -19,8 +19,8 @@ content-type: application/json
 "particular":"sitclf",
 "receiptNo":"fugiat",
 "amount":700,
-"category":"Office Rent",
-"organizationId":"6497c051b05f6fa50af450a6",
+"category":"Car",
+"organizationId":"",
 "memo":"Adipisicing occaecat do ea fugiat ad sit ullamco nisi."
 }
 
@@ -74,3 +74,29 @@ Authorization: Bearer {{AUTH}}
 ###
 GET {{HOSTL}}/accountbookfix
 Authorization: Bearer {{AUTH}}
+
+
+@AUTH2 =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NGE5Nzg0NmE2ZTRjMTE5ZDFlN2RhMjUiLCJlbWFpbCI6ImFmbmFuQHVjb2RlLmFpIiwicGVybWlzc2lvbkxldmVsIjoiMSIsImxhc3ROYW1lIjoiQWhtZWQiLCJvcmdhbml6YXRpb24iOiI2NGE5NmNiNGU0YTE1ODdkOGY5NzhmZmYiLCJ3ZWJBY2Nlc3MiOjAsInJlZnJlc2hLZXkiOiJZcWYxY1RXNkF5U3dLSmZ0dEU2Y2lBPT0iLCJpYXQiOjE2OTUwOTQ1NDd9.aXDCu0XCEcWe2QZOrnB6RZ9MNIdTLjDDBqknmPgwyWA
+###
+POST http://localhost:8090/accountbook HTTP/1.1
+Authorization: Bearer {{AUTH2}}
+content-type: application/json
+
+{
+"particular":"sitclf",
+"receiptNo":"fugiat",
+"amount":455,
+"category":"Car",
+"organizationId":"",
+"memo":"Adipisicing occaecat do ea fugiat ad sit ullamco nisi."
+}
+
+###
+
+POST http://localhost:8090/auth HTTP/1.1
+content-type: application/json
+
+{
+"email":"afnan@ucode.ai",
+"password":"123456"
+}

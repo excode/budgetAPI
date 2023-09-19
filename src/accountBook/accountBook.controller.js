@@ -5,6 +5,7 @@ const AccountBookModel = require('./accountBook.model');
   exports.insert = (req, res) => {
         req.body.createBy=req.jwt.email  
         req.body.createAt=funcs.getTime()
+        console.log(req.jwt)
        if(!req.body.organizationId){
           req.body.organizationId=req.jwt.organization
        }else{

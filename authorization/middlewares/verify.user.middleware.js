@@ -38,11 +38,12 @@ exports.isPasswordAndUserMatch = (req, res, next) => {
                             userId: user.id?user.id:"",
                             email: user.email,
                             permissionLevel: user.userType,
-                            firtName: user.firtName ,
+                            firtName: user.firstName ,
                             lastName: user.lastName ,
                             organization: user.organization?user.organization:"" ,
                             webAccess: 0 
                     };
+                    console.log(req.body );
                     return next();
                         
                        

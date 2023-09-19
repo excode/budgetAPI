@@ -8,7 +8,7 @@ const rootPath="../../";
   const USER = config.permissionLevels.APP_USER;
   const FREE = config.permissionLevels.NORMAL_USER;
   const formValidationRules=[
-    {ctrl:'organization',format:'text',required:true},
+    //{ctrl:'organization',format:'text',required:true},
 {ctrl:'fiscalyear',format:'year',required:true},
 {ctrl:'allcocatedAmount',format:'number',required:true,max:1000,min:1},
 {ctrl:'memo',format:'',required:false},

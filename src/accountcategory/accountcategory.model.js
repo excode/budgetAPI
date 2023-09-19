@@ -216,8 +216,8 @@ exports.list = (perPage, page , query ) => {
 };
 exports.listAll = ( query={} ) => {
     const _query={...query};
-    let sortBy='_id'
-    let sortDirection=-1
+    let sortBy='category'
+    let sortDirection=1
     let max_limit = 300;
     if(query.sortBy){
         sortBy = query.sortBy;

@@ -52,6 +52,9 @@ exports.createAccountBook = (accountbookData) => {
     return new Promise(async(resolve, reject) => {
     const category=  await  AccountcategoryModel.findByCategory(accountbookData.category);
     let amount = parseFloat(accountbookData.amount)
+    let organizationLimitOk=true;
+    let userLimitOk=true;
+    console.log(accountbookData)
 if(accountbookData.organizationId!=""){
     const org= await OrganizationModel.findById(accountbookData.organizationId);
  if(!org){
@@ -68,19 +71,37 @@ if(accountbookData.organizationId!=""){
         //reject("Expenditure amount can't be negative");
    // }
     if(category){
-        const totalBudget = await  AllocationModel.findAllocationByCategory(category.parentCategory,accountbookData.organizationId,"")
+        const totalBudget = await  AllocationModel.findAllocationByCategory(category.category,accountbookData.organizationId,"")
 
         const totalExpand = await  this.findExpenditureByCategory(category.category,accountbookData.organizationId,"")
         accountbookData.parentCategory= category.parentCategory;
         accountbookData.accountType= category.accountType;
      
       let futureTotalExpenditure =totalExpand+ parseFloat(accountbookData.amount)
-     
+      console.log(futureTotalExpenditure)
+      console.log(totalBudget)
       if(futureTotalExpenditure> totalBudget){
+        organizationLimitOk=false;
+        
         reject("Expenditure will exceed Budget allocation");
         return;
       }
+
+     const totalBudget1 = await  AllocationModel.findAllocationByCategory1(category.category,accountbookData.createBy,"")
+
+     const totalExpand1 = await  this.findExpenditureByCategory1(category.category,accountbookData.createBy,"")
+        
+     
+      let futureTotalExpenditure1 =totalExpand1+ parseFloat(accountbookData.amount)
+      console.log(futureTotalExpenditure1)
+      console.log(totalBudget1)
+      if(futureTotalExpenditure1> totalBudget1){
+        userLimitOk=false
+        reject("Expenditure will exceed Budget allocation for "+accountbookData.createBy);
+        return;
+      }
     }
+    
     const accountbook = new AccountBook(accountbookData);
     accountbook.save(function (err, saved) {
         if (err) {
@@ -91,32 +112,9 @@ if(accountbookData.organizationId!=""){
     });
 };
 exports.findExpenditureByCategory = (category,organization,fyscalYear) => {
-var query1=`
-{
-    $match: {
-      
-      category:'${category}',
-      organizationId:'${organization}',
-      createAt: {
-        $gte: ISODate("2023-01-01"), // Start date of the range
-        $lte: ISODate("2023-12-31") // End date of the range
-      }
-    }
-  },
-  {
-    $group: {
-      _id: "$category",
-      totalExpend: { $sum: "$amount" }
-    }
-  },
-  {
-    $project: {
-      category: "$_id",
-      totalExpend: 1,
-      _id: 0
-    }
-  }
-`
+    var fiscalYear1=new Date().getFullYear();
+    var StartDate=fiscalYear1+"-01-01";
+    var EndDate=fiscalYear1+"-12-31"
 var query=
 [
 {
@@ -125,8 +123,62 @@ var query=
       category:category,
       organizationId:organization,
       createAt: {
-        $gte: new Date("2023-01-01"), // Start date of the range
-        $lte: new Date("2023-12-31") // End date of the range
+        $gte: new Date(StartDate), // Start date of the range
+        $lte: new Date(EndDate) // End date of the range
+      }
+    }
+  },
+  {
+    $group: {
+      _id: null,
+      totalExpend: { $sum: "$amount" }
+    }
+  },
+  {
+    $project: {
+        totalExpend: 1,
+      _id: 0
+    }
+  }
+];
+return new Promise((resolve, reject) => {
+    AccountBook.aggregate(query)
+    .exec( function (err,sum){
+       if (err) {
+           //console.log(err);
+           //console.log("RIPA-------");
+           reject(err);
+           
+       }else{
+        if(sum.length>0){
+        const [{totalExpend}]=sum;
+        if(totalExpend){
+          resolve(totalExpend);
+        }else{
+          resolve(0);
+        }
+    }else{
+        resolve(0);
+      }
+       }
+           
+   });  
+ });
+};
+exports.findExpenditureByCategory1 = (category,userId,fyscalYear) => {
+    var fiscalYear1=new Date().getFullYear();
+    var StartDate=fiscalYear1+"-01-01";
+    var EndDate=fiscalYear1+"-12-31"
+var query=
+[
+{
+    $match: {
+      
+      category:category,
+      createBy:userId,
+      createAt: {
+        $gte: new Date(StartDate), // Start date of the range
+        $lte: new Date(EndDate) // End date of the range
       }
     }
   },
@@ -510,7 +562,7 @@ exports.chartDataAll=(query={})=>{
         let budgetByType = await AllocationModel.chartDataByCategory(query,"$accountType")
         let budgetByMonthYear = await AllocationModel.chartDataByCategory(query,monthYear);
             
-       console.log(budgetByCategory)
+      // console.log(bookByCategory)
         let categorydata=[]
         budgetByCategory.forEach(element => {
             let data ={category:element.category,budget:element.totalBudget,expense:0,percentage:0}
@@ -573,7 +625,7 @@ exports.chartDataAll=(query={})=>{
 
     });
 }
-exports.chartDataByCategory = (query={},groupBy="$parentCategory") => {
+exports.chartDataByCategory = (query={},groupBy="$category") => {
 let match={};
 if(query.organizationId){
     match['organizationId'] = query.organizationId;
